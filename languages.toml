@@ -1,0 +1,39 @@
+[language-server.rust-analyzer]
+args = ["client", "--server-path", "rust-analyzer"]
+command = "/usr/local/bin/ra-multiplex"
+
+[[language]]
+name = "c-sharp"
+scope = "source.cs"
+file-types = [ "cs", "razor" ]
+roots = ["sln", "csproj"]
+language-servers = [ "omnisharp" ]
+formatter = { command = "dotnet", args = [ "format" ] }
+
+[language-server.omnisharp]
+command = "omnisharp"
+
+[[language]]
+name = "python"
+roots = ["pyproject.toml"]
+auto-format = true
+
+[[language]]
+name = "rust"
+
+[language.debugger]
+command = "codelldb"
+name = "codelldb"
+port-arg = "--port {}"
+transport = "tcp"
+
+[[language.debugger.templates]]
+name = "binary"
+request = "launch"
+[[language.debugger.templates.completion]]
+completion = "filename"
+name = "binary"
+
+[language.debugger.templates.args]
+program = "{0}"
+runInTerminal = false
