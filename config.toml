@@ -33,6 +33,8 @@ cursor-line = "hint"
 C-r = ":rla"
 q = "goto_previous_buffer"
 e = "goto_next_buffer"
+C-w = ":bc"
+C-q = ":bco"
 
 [editor.file-picker]
 hidden = false
