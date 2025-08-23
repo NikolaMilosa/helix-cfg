@@ -6,7 +6,6 @@ cursorline = true
 true-color = true
 preview-completion-insert = false
 completion-replace = true
-auto-pairs = false
 bufferline = "always"
 
 [editor.lsp]
