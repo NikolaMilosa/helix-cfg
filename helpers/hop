@@ -9,7 +9,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Opens all the files that match a regex in helix
-files=$(find "$PWD" -type f $@ -print0 | xargs -0)
+files=$(find "$PWD" -type f "$@" -print0 | xargs -0)
 
 # echo "Opening ${files[@]}"
 
