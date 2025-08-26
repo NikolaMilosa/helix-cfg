@@ -1,16 +1,44 @@
 #!/bin/bash
 
 if [ $# -eq 0 ]; then
-  echo "Usage: $0 <pattern> [find-options]"
-  echo "Example: $0 '*.rs'     # opens all Rust files in current directory and subdirectories"
-  echo "         $0 -name '*.txt'  # using find-style options"
-  echo "         $0 -path \"*01-node*\" ! -path '*.png'  # using find-style options"
+  echo "Usage: $0 <pattern...>"
+  echo "Examples:"
+  echo "  $0 '*.rs'               # open all Rust files"
+  echo "  $0 '*.rs' '!tests/*'    # open Rust files except in tests/"
+  echo "  $0 '.*\\.txt$' '!.*ignore'  # regex includes and excludes"
   exit 1
 fi
 
-# Opens all the files that match a regex in helix
-files=$(find "$PWD" -type f "$@" -print0 | xargs -0)
+includes=()
+excludes=()
 
-# echo "Opening ${files[@]}"
+for arg in "$@"; do
+  if [[ "$arg" == !* ]]; then
+    # Strip leading !
+    excludes+=("${arg:1}")
+  else
+    includes+=("$arg")
+  fi
+done
 
-helix ${files[@]}
+# Start with all files that ripgrep sees (respects .gitignore)
+files=$(rg --files)
+
+# Apply includes
+if [ ${#includes[@]} -gt 0 ]; then
+  inc_regex=$(printf "|%s" "${includes[@]}")
+  inc_regex="${inc_regex:1}"   # remove leading |
+  files=$(echo "$files" | rg -e "$inc_regex")
+fi
+
+# Apply excludes
+for ex in "${excludes[@]}"; do
+  files=$(echo "$files" | rg -v -e "$ex")
+done
+
+if [ -z "$files" ]; then
+  echo "No files matched."
+  exit 1
+fi
+
+helix $files
