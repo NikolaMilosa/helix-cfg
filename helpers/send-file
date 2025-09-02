@@ -19,7 +19,7 @@ tmux select-pane $direction
 target_pane=$(tmux display -p '#{pane_id}')
 
 # Return back to the current pane
-tmux select-pane -t $current_pane
+# tmux select-pane -t $current_pane
 
 tty=$(tmux display -p -t "$target_pane" '#{pane_tty}' 2>/dev/null)
 
