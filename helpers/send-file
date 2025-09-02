@@ -6,8 +6,9 @@ set -euo pipefail
 
 file="$1"
 direction="$2"
+line="$3"
 
-if [ -z "$file" ] || [ -z "$direction" ]; then
+if [ -z "$file" ] || [ -z "$direction" ] || [ -z "$line" ]; then
     echo "Usage: send-file <filename> <-U|D|L|R>"
     exit 1
 fi
@@ -37,10 +38,15 @@ fi
 
 # Send the command
 actual_path=$(realpath $file)
-if [[ "$cmd" == "hx" || "$cmd" == "helix" ]]; then
+if [[ "$cmd" == "gitstatusd" ]]; then
+  tmux send-keys -t "$target_pane" "helix $actual_path" Enter
+elif [[ "$cmd" == "helix" || "$cmd" == "hx" || "$cmd" == "ra-multiplex" ]]; then
+  tmux send-keys -t "$target_pane" Escape
 	tmux send-keys -t "$target_pane" ":open $actual_path" Enter
 else
-  tmux send-keys -t "$target_pane" "helix $actual_path" Enter
+  echo "Unsupported program in target pane: $cmd" >&2
+  exit 1
 fi
+tmux send-keys -t "$target_pane" "g${line}g"
 
-tmux send-keys -t "$current_pane" "C-w" Enter
+tmux send-keys -t "$current_pane" "C-w"
