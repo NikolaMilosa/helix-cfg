@@ -44,7 +44,9 @@ if ps -o comm= --tty "$tty" | grep -qE 'hx|helix'; then
 elif [[ "$cmd" == "gitstatusd" ]]; then
   tmux send-keys -t "$target_pane" "helix $actual_path" Enter
 else
-  echo "Unsupported program in target pane: $cmd" >&2
+  # Print the full command line of the most recent process
+  full_cmd=$(ps -o args= -p "$pid")
+  echo "Unsupported program in target pane ($target_pane): $full_cmd" >&2
   exit 1
 fi
 tmux send-keys -t "$target_pane" "g${line}g"
