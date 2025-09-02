@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Usage: send-file <filename> <direction>
+# Sends <filename> to a helix instance running in the tmux pane in <direction>
+
+set -euo pipefail
+
+file="$1"
+direction="$2"
+
+if [ -z "$file" ] || [ -z "$direction" ]; then
+    echo "Usage: send-file <filename> <-U|D|L|R>"
+    exit 1
+fi
+
+# Get current pane
+current_pane=$(tmux display -p '#{pane_id}')
+tmux select-pane $direction
+target_pane=$(tmux display -p '#{pane_id}')
+
+# Return back to the current pane
+tmux select-pane -t $current_pane
+
+tty=$(tmux display -p -t "$target_pane" '#{pane_tty}' 2>/dev/null)
+
+if [ -z "$tty" ]; then
+    echo "No such pane"
+    exit 1
+fi
+
+# Get the most recent process on that TTY
+read pid cmd < <(ps -o pid= -o comm= --sort=-pid --tty "$tty" | head -n1)
+
+if [ -z "$target_pane" ] || [ "$target_pane" = "$current_pane" ]; then
+    echo "No pane in direction $direction"
+    exit 1
+fi
+
+# Send the command
+actual_path=$(realpath $file)
+if [[ "$cmd" == "hx" || "$cmd" == "helix" ]]; then
+	tmux send-keys -t "$target_pane" ":open $actual_path" Enter
+else
+  tmux send-keys -t "$target_pane" "helix $actual_path" Enter
+fi
+
+tmux send-keys -t "$current_pane" "C-w" Enter

@@ -40,6 +40,10 @@ d = "file_picker_in_current_buffer_directory"
 
 [keys.normal.space.space]
 b = ":sh better-blame %{cursor_line} %{buffer_name}"
+right = ":sh send-file %{buffer_name} -R"
+left = ":sh send-file %{buffer_name} -L"
+down = ":sh send-file %{buffer_name} -D"
+up = ":sh send-file %{buffer_name} -U"
 
 [editor.file-picker]
 hidden = false
