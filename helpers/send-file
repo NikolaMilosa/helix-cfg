@@ -24,25 +24,25 @@ tmux select-pane -t $current_pane
 tty=$(tmux display -p -t "$target_pane" '#{pane_tty}' 2>/dev/null)
 
 if [ -z "$tty" ]; then
-    echo "No such pane"
+    echo "No such pane" >&2
+    exit 1
+fi
+
+if [ -z "$target_pane" ] || [ "$target_pane" = "$current_pane" ]; then
+    echo "No pane in direction $direction" >&2
     exit 1
 fi
 
 # Get the most recent process on that TTY
 read pid cmd < <(ps -o pid= -o comm= --sort=-pid --tty "$tty" | head -n1)
 
-if [ -z "$target_pane" ] || [ "$target_pane" = "$current_pane" ]; then
-    echo "No pane in direction $direction"
-    exit 1
-fi
-
 # Send the command
 actual_path=$(realpath $file)
-if [[ "$cmd" == "gitstatusd" ]]; then
-  tmux send-keys -t "$target_pane" "helix $actual_path" Enter
-elif [[ "$cmd" == "helix" || "$cmd" == "hx" || "$cmd" == "ra-multiplex" ]]; then
+if ps -o comm= --tty "$tty" | grep -qE 'hx|helix'; then
   tmux send-keys -t "$target_pane" Escape
 	tmux send-keys -t "$target_pane" ":open $actual_path" Enter
+elif [[ "$cmd" == "gitstatusd" ]]; then
+  tmux send-keys -t "$target_pane" "helix $actual_path" Enter
 else
   echo "Unsupported program in target pane: $cmd" >&2
   exit 1
