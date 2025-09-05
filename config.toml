@@ -34,16 +34,35 @@ q = "goto_previous_buffer"
 e = "goto_next_buffer"
 C-w = ":bc"
 C-q = ":bco"
+C-up = "page_cursor_up"
+C-down = "page_cursor_down"
+d = "delete_selection_noyank"
+c = "change_selection_noyank"
+S-up = "page_cursor_half_up"
+S-down = "page_cursor_half_down"
 
 [keys.normal.space]
-d = "file_picker_in_current_buffer_directory"
+d = "file_explorer_in_current_buffer_directory"
 
 [keys.normal.space.space]
 b = ":sh better-blame %{cursor_line} %{buffer_name}"
+r = ":diffg"
 right = ":sh send-file %{buffer_name} -R %{cursor_line}"
 left = ":sh send-file %{buffer_name} -L %{cursor_line}"
 down = ":sh send-file %{buffer_name} -D %{cursor_line}"
 up = ":sh send-file %{buffer_name} -U %{cursor_line}"
+
+[keys.normal.g.n]
+f = "goto_next_function"
+p = "goto_next_parameter"
+c = "goto_next_class"
+t = "goto_next_test"
+
+[keys.normal.g.p]
+f = "goto_prev_function"
+p = "goto_prev_parameter"
+c = "goto_prev_class"
+t = "goto_prev_test"
 
 [editor.file-picker]
 hidden = false
