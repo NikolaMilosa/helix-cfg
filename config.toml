@@ -54,15 +54,17 @@ up = ":sh send-file %{buffer_name} -U %{cursor_line}"
 
 [keys.normal.g.n]
 f = "goto_next_function"
-p = "goto_next_parameter"
+a = "goto_next_parameter"
 c = "goto_next_class"
 t = "goto_next_test"
+p = "goto_next_paragraph"
 
 [keys.normal.g.p]
 f = "goto_prev_function"
-p = "goto_prev_parameter"
+a = "goto_prev_parameter"
 c = "goto_prev_class"
 t = "goto_prev_test"
+p = "goto_prev_paragraph"
 
 [editor.file-picker]
 hidden = false
