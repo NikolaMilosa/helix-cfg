@@ -43,6 +43,7 @@ d = "delete_selection_noyank"
 c = "change_selection_noyank"
 S-up = "page_cursor_half_up"
 S-down = "page_cursor_half_down"
+S-m = "align_view_center"
 
 [keys.normal.space]
 d = "file_explorer_in_current_buffer_directory"
